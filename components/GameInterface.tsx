@@ -235,35 +235,113 @@ export default function GameInterface({ player, onGameComplete }: GameInterfaceP
                 <div className="space-y-2">
                   {/* Tower floors */}
                   {[...Array(10)].reverse().map((_, i) => {
-                    const floorNumber = 10 - i;
-                    const isBuilt = floorNumber <= towersBuilt;
-                    const isCurrent = floorNumber === towersBuilt + 1;
+                    const blockNumber = 10 - i;
+                    const isBuilt = blockNumber <= towersBuilt;
+                    const isCurrent = blockNumber === towersBuilt + 1;
                     
                     return (
                       <div
-                        key={floorNumber}
-                        className={`h-8 rounded transition-all duration-500 flex items-center justify-center text-sm font-bold ${
+                        key={blockNumber}
+                        className={`relative h-12 transition-all duration-500 flex items-center justify-center text-sm font-bold transform hover:scale-105 ${
                           isBuilt 
-                            ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg' 
+                            ? 'bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-500 text-white shadow-2xl border-2 border-yellow-600' 
                             : isCurrent
-                            ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-white animate-pulse'
-                            : 'bg-gray-300/20 text-gray-400'
+                            ? 'bg-gradient-to-br from-blue-400 via-cyan-500 to-teal-500 text-white animate-pulse border-2 border-cyan-400 shadow-lg'
+                            : 'bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 text-gray-400 border-2 border-gray-600'
                         }`}
+                        style={{
+                          clipPath: isBuilt || isCurrent 
+                            ? 'polygon(10% 0%, 90% 0%, 100% 15%, 90% 100%, 10% 100%, 0% 15%)' 
+                            : 'polygon(15% 0%, 85% 0%, 90% 10%, 85% 100%, 15% 100%, 10% 10%)',
+                          boxShadow: isBuilt 
+                            ? '0 8px 25px rgba(251, 191, 36, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3), inset 0 -2px 4px rgba(0, 0, 0, 0.2)' 
+                            : isCurrent
+                            ? '0 6px 20px rgba(34, 211, 238, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2)'
+                            : '0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1)'
+                        }}
                       >
-                        Floor {floorNumber}
+                        {/* Block face highlight */}
+                        <div className={`absolute inset-0 ${
+                          isBuilt 
+                            ? 'bg-gradient-to-br from-white/20 via-transparent to-black/20' 
+                            : isCurrent
+                            ? 'bg-gradient-to-br from-white/15 via-transparent to-black/15'
+                            : 'bg-gradient-to-br from-white/10 via-transparent to-black/30'
+                        }`}
+                        style={{
+                          clipPath: isBuilt || isCurrent 
+                            ? 'polygon(10% 0%, 90% 0%, 100% 15%, 90% 100%, 10% 100%, 0% 15%)' 
+                            : 'polygon(15% 0%, 85% 0%, 90% 10%, 85% 100%, 15% 100%, 10% 10%)'
+                        }}
+                        />
+                        
+                        {/* Block content */}
+                        <div className="relative z-10 flex items-center justify-center w-full h-full">
+                          {isBuilt && (
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                              <span className="font-bold text-sm">Block {blockNumber}</span>
+                              <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                            </div>
+                          )}
+                          {isCurrent && (
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-white/80 rounded-full animate-ping"></div>
+                              <span className="font-bold text-sm">Next Block</span>
+                              <div className="w-2 h-2 bg-white/80 rounded-full animate-ping"></div>
+                            </div>
+                          )}
+                          {!isBuilt && !isCurrent && (
+                            <span className="font-medium text-xs opacity-70">Block {blockNumber}</span>
+                          )}
+                        </div>
+                        
+                        {/* Block studs (LEGO-like dots) */}
+                        {(isBuilt || isCurrent) && (
+                          <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex gap-1">
+                            <div className={`w-1.5 h-1.5 rounded-full ${
+                              isBuilt ? 'bg-yellow-200/80' : 'bg-cyan-200/80'
+                            } shadow-inner`}></div>
+                            <div className={`w-1.5 h-1.5 rounded-full ${
+                              isBuilt ? 'bg-yellow-200/80' : 'bg-cyan-200/80'
+                            } shadow-inner`}></div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
                   
                   {/* Base */}
-                  <div className="h-6 bg-gradient-to-r from-stone-600 to-stone-700 rounded text-white text-center text-xs flex items-center justify-center">
+                  <div className="relative h-8 bg-gradient-to-br from-stone-700 via-stone-800 to-stone-900 text-white text-center text-xs flex items-center justify-center border-2 border-stone-600 shadow-2xl"
+                    style={{
+                      clipPath: 'polygon(5% 0%, 95% 0%, 100% 20%, 95% 100%, 5% 100%, 0% 20%)',
+                      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.3)'
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/20"
+                      style={{
+                        clipPath: 'polygon(5% 0%, 95% 0%, 100% 20%, 95% 100%, 5% 100%, 0% 20%)'
+                      }}
+                    />
+                    <div className="relative z-10 flex items-center gap-2">
+                      <div className="w-1 h-1 bg-stone-400 rounded-full"></div>
+                      <span className="font-bold">FOUNDATION</span>
+                      <div className="w-1 h-1 bg-stone-400 rounded-full"></div>
+                    </div>
                     Foundation
                   </div>
                 </div>
                 
                 <div className="mt-4 text-center">
-                  <div className="text-white text-lg font-bold">{towersBuilt}/10 Floors</div>
+                  <div className="text-white text-lg font-bold">{towersBuilt}/10 Blocks Built</div>
                   <Progress value={(towersBuilt / 10) * 100} className="mt-2" />
+                  <div className="text-blue-200 text-sm mt-2">
+                    {towersBuilt === 0 && "Start building your tower!"}
+                    {towersBuilt > 0 && towersBuilt < 5 && "Great start! Keep building!"}
+                    {towersBuilt >= 5 && towersBuilt < 8 && "Halfway there! Tower looking good!"}
+                    {towersBuilt >= 8 && towersBuilt < 10 && "Almost complete! Final push!"}
+                    {towersBuilt === 10 && "🎉 Tower Complete! Amazing work!"}
+                  </div>
                 </div>
               </CardContent>
             </Card>
